@@ -297,7 +297,7 @@ def main():
                 score,
                 beans[bean_id]['name'],
                 beans[bean_id]['origin_1'],
-                beans[bean_id]['desc_1'] + beans[bean_id]['desc_2'] + beans[bean_id]['desc_3']))
+                beans[bean_id]['desc_1'] + " " + beans[bean_id]['desc_2'] + " " + beans[bean_id]['desc_3']))
         print()
 
 
