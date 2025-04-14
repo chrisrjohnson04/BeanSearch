@@ -9,6 +9,10 @@ from collections import Counter
 import re
 import json
 import os
+from sklearn.feature_extraction.text import TfidfVectorizer
+from scipy.sparse.linalg import svds
+from sklearn.preprocessing import normalize
+import numpy as np
 
 
 def tokenize(text: str) -> List[str]:
@@ -323,41 +327,93 @@ def filtered_search(query, inv_idx, idf, doc_norms, beans, roast_types=None, max
                         roast_filter=roast_types, max_price=max_price, beans=beans)
 
 
-def main():
-    # Sample queries
-    queries = [u"A robust floral light roast bean with chocolate tones",
-               u"Organic african bean from ethiopia"]
+class SVDSearch:
+    def __init__(self, beans, n_components=40):
+        """Initialize the SVD search with coffee bean data
 
-    # Load the transcript
-    with open(os.path.join("coffee.json"), "r") as f:
-        beans = json.load(f)
+        Parameters:
+        -----------
+        beans: list
+            List of coffee bean dictionaries
+        n_components: int
+            Number of latent dimensions for SVD
+        """
+        self.beans = beans
+        self.n_components = n_components
+        self.vectorizer = None
+        self.td_matrix = None
+        self.docs_compressed = None
+        self.words_compressed = None
+        self.singular_values = None
+        self.docs_compressed_normed = None
+        self.words_compressed_normed = None
 
-    # Precompute important values
-    bean_tokens = tokenize_beans(beans)
+    def build_model(self):
+        """Build the SVD model from bean descriptions"""
+        combined_descriptions = [
+            bean["desc_1"] + " " + bean["desc_2"] + " " + bean["desc_3"]
+            for bean in self.beans
+        ]
 
-    inv_idx = build_inverted_index(bean_tokens)
+        self.vectorizer = TfidfVectorizer(
+            stop_words='english', max_df=0.7, min_df=2)
+        self.td_matrix = self.vectorizer.fit_transform(combined_descriptions)
 
-    idf = compute_idf(inv_idx, len(bean_tokens))
+        self.docs_compressed, self.singular_values, vt = svds(
+            self.td_matrix, k=self.n_components)
 
-    inv_idx = {key: val for key, val in inv_idx.items()
-               if key in idf}
+        idx = np.argsort(-self.singular_values)
+        self.singular_values = self.singular_values[idx]
+        self.docs_compressed = self.docs_compressed[:, idx]
+        vt = vt[idx, :]
 
-    doc_norms = compute_doc_norms(inv_idx, idf, len(bean_tokens))
+        self.words_compressed = vt.transpose()
 
-    # Compute results
-    for query in queries:
-        print("#" * len(query))
-        print(query)
-        print("#" * len(query))
+        self.docs_compressed_normed = normalize(self.docs_compressed)
+        self.words_compressed_normed = normalize(self.words_compressed)
 
-        for score, bean_id in index_search(query, inv_idx, idf, doc_norms)[:10]:
-            print("[{:.2f}] {}: {}\n\t({})".format(
-                score,
-                beans[bean_id]['name'],
-                beans[bean_id]['origin_1'],
-                beans[bean_id]['desc_1'] + " " + beans[bean_id]['desc_2'] + " " + beans[bean_id]['desc_3']))
-        print()
+        return self
 
+    def search(self, query, roast_types=None, max_price=None, k=10):
+        """Search for beans similar to query in latent space
 
-if __name__ == '__main__':
-    main()
+        Parameters:
+        -----------
+        query: str
+            Query text to search for
+        roast_types: list, optional
+            List of roast types to filter by
+        max_price: float, optional
+            Maximum price per 100g in USD
+        k: int
+            Number of results to return
+
+        Returns:
+        --------
+        List of tuples (score, doc_id)
+            Top k results sorted by similarity
+        """
+        query_tfidf = self.vectorizer.transform([query]).toarray()
+
+        query_vec = np.dot(query_tfidf, self.words_compressed)
+
+        query_vec = normalize(query_vec).squeeze()
+
+        similarities = self.docs_compressed_normed.dot(query_vec)
+
+        results = []
+        for doc_id, sim in enumerate(similarities):
+            if roast_types and self.beans[doc_id]['roast'] not in roast_types:
+                continue
+
+            if max_price is not None:
+                bean_price = self.beans[doc_id].get('100g_USD')
+                if bean_price is None or float(bean_price) > float(max_price):
+                    continue
+
+            results.append((float(sim), doc_id))
+
+        # sort by similarity (descending)
+        results.sort(reverse=True)
+
+        return results[:k]

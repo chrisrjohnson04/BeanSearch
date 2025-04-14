@@ -30,6 +30,16 @@
           onkeyup="filterText()"
         />
       </div>
+      <div class="svd-toggle-container">
+        <label class="svd-toggle">
+          <input type="checkbox" id="use-svd" onchange="filterText()" />
+          <span class="svd-toggle-label">Use SVD Search</span>
+          <span class="svd-tooltip"
+            >(Uses machine learning to find beans based on meaning, not just
+            keywords)</span
+          >
+        </label>
+      </div>
       <div class="filters-container">
         <div class="roast-filter">
           <div class="roast-dropdown">
@@ -119,11 +129,15 @@
   </div>
 
   <script>
-    function answerBoxTemplate(title, titleDesc, rating) {
-      return `<div class=''>
+    function answerBoxTemplate(title, titleDesc, rating, score) {
+      const scoreDisplay = score
+        ? `<p class="bean-score">Match Score: ${score}</p>`
+        : "";
+      return `<div class='bean-result'>
                 <h3 class='bean-name'>${title}</h3>
                 <p class='bean-desc'>${titleDesc}</p>
                 <p class='bean-rating'>Review Rating: ${rating}</p>
+                ${scoreDisplay}
             </div>`;
     }
 
@@ -157,9 +171,11 @@
     };
 
     function filterText() {
-      document.getElementById("answer-box").innerHTML = "";
+      document.getElementById("answer-box").innerHTML =
+        "<div class='loading'>Searching beans...</div>";
       const searchQuery = document.getElementById("filter-text-val").value;
       const maxPrice = document.getElementById("max-price").value;
+      const useSVD = document.getElementById("use-svd").checked;
 
       // Get all selected roast types
       const selectedRoasts = [];
@@ -176,20 +192,24 @@
             bean_query: searchQuery,
             roast_types: selectedRoasts.join(","),
             max_price: maxPrice,
+            use_svd: useSVD,
           }).toString()
       )
         .then((response) => response.json())
         .then((data) => {
+          document.getElementById("answer-box").innerHTML = "";
+
           if (data.length === 0) {
             document.getElementById("answer-box").innerHTML =
-              "<p class='no-results'>No matching coffee beans found. Try adjusting your filters.</p>";
+              "<p class='no-results'>No matching coffee beans found. Try adjusting your filters or search terms.</p>";
           } else {
             data.forEach((row) => {
               let tempDiv = document.createElement("div");
               tempDiv.innerHTML = answerBoxTemplate(
                 row.name,
                 row.desc,
-                row.rating
+                row.rating,
+                row.score
               );
               document.getElementById("answer-box").appendChild(tempDiv);
             });

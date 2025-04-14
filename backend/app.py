@@ -31,11 +31,24 @@ inv_idx = {key: val for key, val in inv_idx.items() if key in idf}
 doc_norms = logic.compute_doc_norms(inv_idx, idf, len(bean_tokens))
 
 
-def json_search(query, roast_types=None, max_price=None):
-    """Search function that supports both roast and price filtering"""
-    # Use the filtered search function
-    search_results = logic.filtered_search(
-        query, inv_idx, idf, doc_norms, beans, roast_types, max_price)
+# Initialize and build SVD model
+print("Building SVD model...")
+svd_search = logic.SVDSearch(beans, n_components=40)
+svd_search.build_model()
+print("SVD model built successfully!")
+
+
+def json_search(query, roast_types=None, max_price=None, use_svd=False):
+    """Search function that supports both roast and price filtering,
+    with option to use SVD-based semantic search"""
+
+    if use_svd:
+        print(f"Using SVD search with query: '{query}'")
+        search_results = svd_search.search(query, roast_types, max_price)
+    else:
+        print(f"Using traditional search with query: '{query}'")
+        search_results = logic.filtered_search(
+            query, inv_idx, idf, doc_norms, beans, roast_types, max_price)
 
     res = []
     for score, bean_id in search_results:
@@ -43,6 +56,8 @@ def json_search(query, roast_types=None, max_price=None):
         bean_copy = obj.copy()
         bean_copy["desc"] = obj['desc_1'] + " " + \
             obj['desc_2'] + " " + obj['desc_3']
+        # Include the score for debugging purposes
+        bean_copy["score"] = round(score, 4)
         res.append(bean_copy)
 
     return json.dumps(res)
@@ -58,6 +73,7 @@ def beans_search():
     text = request.args.get("bean_query", "")
     roast_types_param = request.args.get("roast_types", "")
     max_price = request.args.get("max_price")
+    use_svd = request.args.get("use_svd", "false").lower() == "true"
 
     # Parse roast types from URL params
     roast_types = roast_types_param.split(',') if roast_types_param else []
@@ -70,7 +86,7 @@ def beans_search():
         except ValueError:
             max_price = None
 
-    return json_search(text, roast_types if roast_types else None, max_price)
+    return json_search(text, roast_types if roast_types else None, max_price, use_svd)
 
 
 if 'DB_NAME' not in os.environ:
