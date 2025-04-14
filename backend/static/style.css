@@ -48,18 +48,12 @@
   margin-right: 3px;
 }
 
-.search-controls {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-top: 10px;
-}
-
 .input-box {
   border-radius: 50px;
   border: 1px solid black;
   display: flex;
   align-items: center;
+  margin-top: 10px;
   padding: 12px;
   width: 600px;
 }
@@ -83,7 +77,17 @@
   outline: 0;
 }
 
-/* Roast filter dropdown styling */
+/* Filters container */
+.filters-container {
+  display: flex;
+  margin-top: 15px;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 700px;
+}
+
+/* Roast filter styling */
 .roast-filter {
   position: relative;
 }
@@ -143,6 +147,39 @@
   display: block;
 }
 
+/* Price filter styling */
+.price-filter {
+  flex-grow: 1;
+  max-width: 350px;
+}
+
+.price-slider-container {
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #f8f8f8;
+  font-family: "Montserrat", sans-serif;
+}
+
+.price-slider-container label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+#max-price {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.price-ticks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #666;
+  padding: 0 2px;
+}
+
 #answer-box {
   width: 700px;
   margin-top: 50px;
@@ -154,4 +191,18 @@
 
 .bean-desc {
   font-family: "Montserrat", sans-serif;
+}
+
+.no-results {
+  font-family: "Montserrat", sans-serif;
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.error-message {
+  font-family: "Montserrat", sans-serif;
+  text-align: center;
+  padding: 20px;
+  color: #d32f2f;
 }

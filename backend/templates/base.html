@@ -30,57 +30,87 @@
           onkeyup="filterText()"
         />
       </div>
-      <div class="roast-filter">
-        <div class="roast-dropdown">
-          <button onclick="toggleRoastDropdown()" class="roast-dropbtn">
-            Select Roasts
-          </button>
-          <div id="roastDropdown" class="roast-dropdown-content">
-            <label
-              ><input
-                type="checkbox"
-                name="roast"
-                value="Light"
-                onchange="filterText()"
-              />
-              Light</label
+      <div class="filters-container">
+        <div class="roast-filter">
+          <div class="roast-dropdown">
+            <button onclick="toggleRoastDropdown()" class="roast-dropbtn">
+              Select Roasts
+            </button>
+            <div id="roastDropdown" class="roast-dropdown-content">
+              <label
+                ><input
+                  type="checkbox"
+                  name="roast"
+                  value="Light"
+                  onchange="filterText()"
+                />
+                Light</label
+              >
+              <label
+                ><input
+                  type="checkbox"
+                  name="roast"
+                  value="Medium-Light"
+                  onchange="filterText()"
+                />
+                Medium-Light</label
+              >
+              <label
+                ><input
+                  type="checkbox"
+                  name="roast"
+                  value="Medium"
+                  onchange="filterText()"
+                />
+                Medium</label
+              >
+              <label
+                ><input
+                  type="checkbox"
+                  name="roast"
+                  value="Medium-Dark"
+                  onchange="filterText()"
+                />
+                Medium-Dark</label
+              >
+              <label
+                ><input
+                  type="checkbox"
+                  name="roast"
+                  value="Dark"
+                  onchange="filterText()"
+                />
+                Dark</label
+              >
+            </div>
+          </div>
+        </div>
+        <div class="price-filter">
+          <div class="price-slider-container">
+            <label for="max-price"
+              >Max Price (per 100g): $<span id="price-value">40</span></label
             >
-            <label
-              ><input
-                type="checkbox"
-                name="roast"
-                value="Medium-Light"
-                onchange="filterText()"
-              />
-              Medium-Light</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                name="roast"
-                value="Medium"
-                onchange="filterText()"
-              />
-              Medium</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                name="roast"
-                value="Medium-Dark"
-                onchange="filterText()"
-              />
-              Medium-Dark</label
-            >
-            <label
-              ><input
-                type="checkbox"
-                name="roast"
-                value="Dark"
-                onchange="filterText()"
-              />
-              Dark</label
-            >
+            <input
+              type="range"
+              id="max-price"
+              name="max-price"
+              min="5"
+              max="40"
+              step="5"
+              value="40"
+              onchange="updatePriceLabel(); filterText();"
+              oninput="updatePriceLabel();"
+            />
+            <div class="price-ticks">
+              <span>$5</span>
+              <span>$10</span>
+              <span>$15</span>
+              <span>$20</span>
+              <span>$25</span>
+              <span>$30</span>
+              <span>$35</span>
+              <span>$40</span>
+            </div>
           </div>
         </div>
       </div>
@@ -105,6 +135,12 @@
       document.getElementById("roastDropdown").classList.toggle("show");
     }
 
+    function updatePriceLabel() {
+      const priceSlider = document.getElementById("max-price");
+      const priceValueDisplay = document.getElementById("price-value");
+      priceValueDisplay.textContent = priceSlider.value;
+    }
+
     // Close the dropdown if the user clicks outside of it
     window.onclick = function (event) {
       if (!event.target.matches(".roast-dropbtn")) {
@@ -123,7 +159,7 @@
     function filterText() {
       document.getElementById("answer-box").innerHTML = "";
       const searchQuery = document.getElementById("filter-text-val").value;
-      console.log(searchQuery);
+      const maxPrice = document.getElementById("max-price").value;
 
       // Get all selected roast types
       const selectedRoasts = [];
@@ -137,22 +173,33 @@
       fetch(
         "/beans?" +
           new URLSearchParams({
-            bean_query: document.getElementById("filter-text-val").value,
+            bean_query: searchQuery,
             roast_types: selectedRoasts.join(","),
+            max_price: maxPrice,
           }).toString()
       )
         .then((response) => response.json())
-        .then((data) =>
-          data.forEach((row) => {
-            let tempDiv = document.createElement("div");
-            tempDiv.innerHTML = answerBoxTemplate(
-              row.name,
-              row.desc,
-              row.rating
-            );
-            document.getElementById("answer-box").appendChild(tempDiv);
-          })
-        );
+        .then((data) => {
+          if (data.length === 0) {
+            document.getElementById("answer-box").innerHTML =
+              "<p class='no-results'>No matching coffee beans found. Try adjusting your filters.</p>";
+          } else {
+            data.forEach((row) => {
+              let tempDiv = document.createElement("div");
+              tempDiv.innerHTML = answerBoxTemplate(
+                row.name,
+                row.desc,
+                row.rating
+              );
+              document.getElementById("answer-box").appendChild(tempDiv);
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching results:", error);
+          document.getElementById("answer-box").innerHTML =
+            "<p class='error-message'>Error loading results. Please try again.</p>";
+        });
     }
   </script>
 </body>

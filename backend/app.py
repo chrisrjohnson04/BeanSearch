@@ -31,11 +31,11 @@ inv_idx = {key: val for key, val in inv_idx.items() if key in idf}
 doc_norms = logic.compute_doc_norms(inv_idx, idf, len(bean_tokens))
 
 
-def json_search(query, roast_types=None):
-    """New function that supports roast type filtering"""
+def json_search(query, roast_types=None, max_price=None):
+    """Search function that supports both roast and price filtering"""
     # Use the filtered search function
     search_results = logic.filtered_search(
-        query, inv_idx, idf, doc_norms, beans, roast_types)
+        query, inv_idx, idf, doc_norms, beans, roast_types, max_price)
 
     res = []
     for score, bean_id in search_results:
@@ -54,15 +54,23 @@ def home():
 
 
 @app.route("/beans")
-def episodes_search():
+def beans_search():
     text = request.args.get("bean_query", "")
     roast_types_param = request.args.get("roast_types", "")
+    max_price = request.args.get("max_price")
 
     # Parse roast types from URL params
     roast_types = roast_types_param.split(',') if roast_types_param else []
     roast_types = [rt for rt in roast_types if rt]
 
-    return json_search(text, roast_types if roast_types else None)
+    # Convert max_price to float if provided
+    if max_price:
+        try:
+            max_price = float(max_price)
+        except ValueError:
+            max_price = None
+
+    return json_search(text, roast_types if roast_types else None, max_price)
 
 
 if 'DB_NAME' not in os.environ:

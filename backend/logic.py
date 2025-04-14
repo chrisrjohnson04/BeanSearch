@@ -207,6 +207,7 @@ def index_search(
     score_func=accumulate_dot_scores,
     tokenizer=tokenize,
     roast_filter=None,
+    max_price=None,
     beans=None
 ) -> List[Tuple[int, int]]:
     """Search the collection of documents for the given query
@@ -233,8 +234,11 @@ def index_search(
         List of roast types to filter by. If provided, only beans with a matching
         roast_level will be included in the results.
 
+    max_price: float, optional
+        Maximum price per 100g in USD. Only beans with price <= max_price will be included.
+
     beans: list of dictionaries, optional
-        Original bean data needed for roast filtering. Required if roast_filter is provided.
+        Original bean data needed for filtering. Required if roast_filter or max_price is provided.
 
     Returns
     =======
@@ -263,11 +267,18 @@ def index_search(
 
     cosine_dict = {}
     for doc_id, dot_val in dot_scores.items():
-        # Apply roast filter if specified
-        if roast_filter and beans and doc_id < len(beans):
-            bean_roast = beans[doc_id]['roast']
-            if bean_roast not in roast_filter:
+        # Skip if the bean doesn't meet the filter criteria
+        if beans and doc_id < len(beans):
+            # Apply roast filter if specified
+            if roast_filter and beans[doc_id]['roast'] not in roast_filter:
                 continue
+
+            # Apply price filter if specified
+            if max_price is not None:
+                bean_price = beans[doc_id].get('100g_USD')
+                # Skip if price is missing or exceeds the maximum
+                if bean_price is None or float(bean_price) > float(max_price):
+                    continue
 
         cosine_dict[doc_id] = dot_val / (query_norm * doc_norms[doc_id]
                                          ) if query_norm > 0 and doc_norms[doc_id] > 0 else 0
@@ -277,8 +288,8 @@ def index_search(
     return results[:10]  # Limit to top 10 results after filtering
 
 
-def filtered_search(query, inv_idx, idf, doc_norms, beans, roast_types=None):
-    """Wrapper function to search with roast filtering
+def filtered_search(query, inv_idx, idf, doc_norms, beans, roast_types=None, max_price=None):
+    """Wrapper function to search with filtering
 
     Arguments:
     ==========
@@ -300,13 +311,16 @@ def filtered_search(query, inv_idx, idf, doc_norms, beans, roast_types=None):
     roast_types: list, optional
         List of roast types to filter by
 
+    max_price: float, optional
+        Maximum price per 100g in USD
+
     Returns:
     ========
     List of tuples (score, doc_id)
         Top 10 matching results after filtering
     """
     return index_search(query, inv_idx, idf, doc_norms,
-                        roast_filter=roast_types, beans=beans)
+                        roast_filter=roast_types, max_price=max_price, beans=beans)
 
 
 def main():
