@@ -1,61 +1,48 @@
 .full-body-container {
-  position: absolute;
+  margin: 0 auto;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
+  width: 70%;
   height: 100%;
   display: flex;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 
-#google-c {
-  color: #4285f4;
-}
-
-#google-s {
-  color: #db4437;
-}
-
-#google-4 {
-  color: #f4b400;
-}
-
-#google-3 {
-  color: #4285f4;
-}
-
-#google-0-1 {
-  color: #0f9d58;
-}
-
-#google-0-2 {
-  color: #db4437;
+#everything {
+  position: relative;
 }
 
 .google-colors {
-  display: flex;
-  align-items: center;
   font-size: 48px;
+  text-align: center;
+  justify-content: center;
   font-family: "Open Sans", sans-serif;
 }
 
 .google-colors h1 {
   margin-bottom: 0;
   margin-right: 3px;
+  color: #358F38;
 }
 
+.google-colors h2 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #4A4A4A;
+}
 .input-box {
   border-radius: 50px;
-  border: 1px solid black;
   display: flex;
   align-items: center;
   margin-top: 10px;
   padding: 12px;
   width: 600px;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+  margin-bottom: 10px;
 }
 
 .input-box img {
@@ -77,19 +64,23 @@
   outline: 0;
 }
 
-/* Filters container */
-.filters-container {
-  display: flex;
-  margin-top: 15px;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-  width: 700px;
+#filters-container {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
 }
 
-/* Roast filter styling */
 .roast-filter {
   position: relative;
+  margin-bottom: 10px;
 }
 
 .roast-dropdown {
@@ -147,11 +138,6 @@
   display: block;
 }
 
-/* Price filter styling */
-.price-filter {
-  flex-grow: 1;
-  max-width: 350px;
-}
 
 .price-slider-container {
   border: 1px solid black;
@@ -183,6 +169,8 @@
 #answer-box {
   width: 700px;
   margin-top: 50px;
+  align-items: center;
+  justify-content: center;
 }
 
 .bean-name {
