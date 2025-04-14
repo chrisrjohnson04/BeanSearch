@@ -206,6 +206,8 @@ def index_search(
     doc_norms,
     score_func=accumulate_dot_scores,
     tokenizer=tokenize,
+    roast_filter=None,
+    beans=None
 ) -> List[Tuple[int, int]]:
     """Search the collection of documents for the given query
 
@@ -227,6 +229,13 @@ def index_search(
 
     tokenizer: a TreebankWordTokenizer
 
+    roast_filter: list of strings, optional
+        List of roast types to filter by. If provided, only beans with a matching
+        roast_level will be included in the results.
+
+    beans: list of dictionaries, optional
+        Original bean data needed for roast filtering. Required if roast_filter is provided.
+
     Returns
     =======
 
@@ -234,9 +243,6 @@ def index_search(
         Sorted list of results such that the first element has
         the highest score, and `doc_id` points to the document
         with the highest score.
-
-    Note:
-
     """
     # preprocess the query
     query = query.lower()
@@ -257,12 +263,50 @@ def index_search(
 
     cosine_dict = {}
     for doc_id, dot_val in dot_scores.items():
+        # Apply roast filter if specified
+        if roast_filter and beans and doc_id < len(beans):
+            bean_roast = beans[doc_id]['roast']
+            if bean_roast not in roast_filter:
+                continue
+
         cosine_dict[doc_id] = dot_val / (query_norm * doc_norms[doc_id]
                                          ) if query_norm > 0 and doc_norms[doc_id] > 0 else 0
 
     results = [(score, doc_id) for doc_id, score in cosine_dict.items()]
     results.sort(key=lambda x: x[0], reverse=True)
-    return results
+    return results[:10]  # Limit to top 10 results after filtering
+
+
+def filtered_search(query, inv_idx, idf, doc_norms, beans, roast_types=None):
+    """Wrapper function to search with roast filtering
+
+    Arguments:
+    ==========
+    query: string
+        The query text to search for
+
+    inv_idx: dict
+        The inverted index
+
+    idf: dict
+        The precomputed IDF values
+
+    doc_norms: list
+        The precomputed document norms
+
+    beans: list
+        The original bean data
+
+    roast_types: list, optional
+        List of roast types to filter by
+
+    Returns:
+    ========
+    List of tuples (score, doc_id)
+        Top 10 matching results after filtering
+    """
+    return index_search(query, inv_idx, idf, doc_norms,
+                        roast_filter=roast_types, beans=beans)
 
 
 def main():

@@ -23,26 +23,27 @@ with open(os.path.join("coffee.json"), "r") as f:
 app = Flask(__name__)
 CORS(app)
 
+# Precompute important values for search
+bean_tokens = logic.tokenize_beans(beans)
+inv_idx = logic.build_inverted_index(bean_tokens)
+idf = logic.compute_idf(inv_idx, len(bean_tokens))
+inv_idx = {key: val for key, val in inv_idx.items() if key in idf}
+doc_norms = logic.compute_doc_norms(inv_idx, idf, len(bean_tokens))
 
-def json_search(query):
-    bean_tokens = logic.tokenize_beans(beans)
 
-    inv_idx = logic.build_inverted_index(bean_tokens)
-
-    idf = logic.compute_idf(inv_idx, len(bean_tokens))
-
-    inv_idx = {key: val for key, val in inv_idx.items()
-               if key in idf}
-
-    doc_norms = logic.compute_doc_norms(inv_idx, idf, len(bean_tokens))
+def json_search(query, roast_types=None):
+    """New function that supports roast type filtering"""
+    # Use the filtered search function
+    search_results = logic.filtered_search(
+        query, inv_idx, idf, doc_norms, beans, roast_types)
 
     res = []
-
-    for score, bean_id in logic.index_search(query, inv_idx, idf, doc_norms)[:10]:
+    for score, bean_id in search_results:
         obj = beans[bean_id]
-        obj["desc"] = beans[bean_id]['desc_1'] + " " + \
-            beans[bean_id]['desc_2'] + " " + beans[bean_id]['desc_3']
-        res.append(obj)
+        bean_copy = obj.copy()
+        bean_copy["desc"] = obj['desc_1'] + " " + \
+            obj['desc_2'] + " " + obj['desc_3']
+        res.append(bean_copy)
 
     return json.dumps(res)
 
@@ -54,8 +55,14 @@ def home():
 
 @app.route("/beans")
 def episodes_search():
-    text = request.args.get("bean_query")
-    return json_search(text)
+    text = request.args.get("bean_query", "")
+    roast_types_param = request.args.get("roast_types", "")
+
+    # Parse roast types from URL params
+    roast_types = roast_types_param.split(',') if roast_types_param else []
+    roast_types = [rt for rt in roast_types if rt]
+
+    return json_search(text, roast_types if roast_types else None)
 
 
 if 'DB_NAME' not in os.environ:

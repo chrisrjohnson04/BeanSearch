@@ -30,6 +30,60 @@
           onkeyup="filterText()"
         />
       </div>
+      <div class="roast-filter">
+        <div class="roast-dropdown">
+          <button onclick="toggleRoastDropdown()" class="roast-dropbtn">
+            Select Roasts
+          </button>
+          <div id="roastDropdown" class="roast-dropdown-content">
+            <label
+              ><input
+                type="checkbox"
+                name="roast"
+                value="Light"
+                onchange="filterText()"
+              />
+              Light</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                name="roast"
+                value="Medium-Light"
+                onchange="filterText()"
+              />
+              Medium-Light</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                name="roast"
+                value="Medium"
+                onchange="filterText()"
+              />
+              Medium</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                name="roast"
+                value="Medium-Dark"
+                onchange="filterText()"
+              />
+              Medium-Dark</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                name="roast"
+                value="Dark"
+                onchange="filterText()"
+              />
+              Dark</label
+            >
+          </div>
+        </div>
+      </div>
     </div>
     <div id="answer-box"></div>
   </div>
@@ -47,13 +101,44 @@
       document.getElementById("filter-text-val").focus();
     }
 
+    function toggleRoastDropdown() {
+      document.getElementById("roastDropdown").classList.toggle("show");
+    }
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function (event) {
+      if (!event.target.matches(".roast-dropbtn")) {
+        var dropdowns = document.getElementsByClassName(
+          "roast-dropdown-content"
+        );
+        for (var i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains("show")) {
+            openDropdown.classList.remove("show");
+          }
+        }
+      }
+    };
+
     function filterText() {
       document.getElementById("answer-box").innerHTML = "";
-      console.log(document.getElementById("filter-text-val").value);
+      const searchQuery = document.getElementById("filter-text-val").value;
+      console.log(searchQuery);
+
+      // Get all selected roast types
+      const selectedRoasts = [];
+      const checkboxes = document.querySelectorAll(
+        'input[name="roast"]:checked'
+      );
+      checkboxes.forEach((checkbox) => {
+        selectedRoasts.push(checkbox.value);
+      });
+
       fetch(
         "/beans?" +
           new URLSearchParams({
             bean_query: document.getElementById("filter-text-val").value,
+            roast_types: selectedRoasts.join(","),
           }).toString()
       )
         .then((response) => response.json())

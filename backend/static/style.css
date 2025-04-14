@@ -48,12 +48,18 @@
   margin-right: 3px;
 }
 
+.search-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
 .input-box {
   border-radius: 50px;
   border: 1px solid black;
   display: flex;
   align-items: center;
-  margin-top: 10px;
   padding: 12px;
   width: 600px;
 }
@@ -75,6 +81,66 @@
   font-size: 16px;
   border: none;
   outline: 0;
+}
+
+/* Roast filter dropdown styling */
+.roast-filter {
+  position: relative;
+}
+
+.roast-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.roast-dropbtn {
+  background-color: #f8f8f8;
+  color: #333;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 1px solid black;
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: "Montserrat", sans-serif;
+  transition: background-color 0.3s;
+}
+
+.roast-dropbtn:hover {
+  background-color: #f1f1f1;
+}
+
+.roast-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 180px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+}
+
+.roast-dropdown-content label {
+  display: block;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-family: "Montserrat", sans-serif;
+  transition: background-color 0.2s;
+}
+
+.roast-dropdown-content label:hover {
+  background-color: #f1f1f1;
+  border-radius: 4px;
+}
+
+.roast-dropdown-content input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.show {
+  display: block;
 }
 
 #answer-box {
