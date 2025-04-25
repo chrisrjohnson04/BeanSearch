@@ -10,127 +10,130 @@
 <!-- test -->
 <body>
   <div id="everything">
-  <aside id="filters-container" style="display: none;">
-    <div class="roast-filter">
-      <div class="roast-dropdown">
-        <button onclick="toggleRoastDropdown()" class="roast-dropbtn">
-          Select Roasts
-        </button>
-        <div id="roastDropdown" class="roast-dropdown-content">
-          <label
-            ><input
-              type="checkbox"
-              name="roast"
-              value="Light"
-              onchange="filterText()"
-            />
-            Light</label
-          >
-          <label
-            ><input
-              type="checkbox"
-              name="roast"
-              value="Medium-Light"
-              onchange="filterText()"
-            />
-            Medium-Light</label
-          >
-          <label
-            ><input
-              type="checkbox"
-              name="roast"
-              value="Medium"
-              onchange="filterText()"
-            />
-            Medium</label
-          >
-          <label
-            ><input
-              type="checkbox"
-              name="roast"
-              value="Medium-Dark"
-              onchange="filterText()"
-            />
-            Medium-Dark</label
-          >
-          <label
-            ><input
-              type="checkbox"
-              name="roast"
-              value="Dark"
-              onchange="filterText()"
-            />
-            Dark</label
-          >
+    <aside id="filters-container" style="display: none">
+      <div class="roast-filter">
+        <div class="roast-dropdown">
+          <button onclick="toggleRoastDropdown()" class="roast-dropbtn">
+            Select Roasts
+          </button>
+          <div id="roastDropdown" class="roast-dropdown-content">
+            <label
+              ><input
+                type="checkbox"
+                name="roast"
+                value="Light"
+                onchange="filterText()"
+              />
+              Light</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                name="roast"
+                value="Medium-Light"
+                onchange="filterText()"
+              />
+              Medium-Light</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                name="roast"
+                value="Medium"
+                onchange="filterText()"
+              />
+              Medium</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                name="roast"
+                value="Medium-Dark"
+                onchange="filterText()"
+              />
+              Medium-Dark</label
+            >
+            <label
+              ><input
+                type="checkbox"
+                name="roast"
+                value="Dark"
+                onchange="filterText()"
+              />
+              Dark</label
+            >
+          </div>
         </div>
       </div>
-    </div>
-    <div class="price-filter">
-      <div class="price-slider-container">
-        <label for="max-price"
-          >Max Price (per 100g): $<span id="price-value">40</span></label
-        >
-        <input
-          type="range"
-          id="max-price"
-          name="max-price"
-          min="5"
-          max="40"
-          step="5"
-          value="40"
-          onchange="updatePriceLabel(); filterText();"
-          oninput="updatePriceLabel();"
-        />
-        <div class="price-ticks">
-          <span>$5</span>
-          <span>$10</span>
-          <span>$15</span>
-          <span>$20</span>
-          <span>$25</span>
-          <span>$30</span>
-          <span>$35</span>
-          <span>$40</span>
+      <div class="price-filter">
+        <div class="price-slider-container">
+          <label for="max-price"
+            >Max Price (per 100g): $<span id="price-value">40</span></label
+          >
+          <input
+            type="range"
+            id="max-price"
+            name="max-price"
+            min="5"
+            max="40"
+            step="5"
+            value="40"
+            onchange="updatePriceLabel(); filterText();"
+            oninput="updatePriceLabel();"
+          />
+          <div class="price-ticks">
+            <span>$5</span>
+            <span>$10</span>
+            <span>$15</span>
+            <span>$20</span>
+            <span>$25</span>
+            <span>$30</span>
+            <span>$35</span>
+            <span>$40</span>
+          </div>
         </div>
       </div>
+    </aside>
+    <div class="full-body-container">
+      <div class="top-text">
+        <div class="google-colors">
+          <h1>Bean Search</h1>
+          <h2>Espresso Yourself</h2>
+        </div>
+        <div class="input-box" onclick="sendFocus()">
+          <img src="{{ url_for('static', filename='images/mag.png') }}" />
+          <input
+            placeholder="Search for a coffee bean"
+            id="filter-text-val"
+            onkeyup="filterText()"
+          />
+        </div>
+        <div class="svd-toggle-container">
+          <label class="svd-toggle">
+            <input type="checkbox" id="use-svd" onchange="filterText()" />
+            <span class="svd-toggle-label">Use SVD Search</span>
+            <span class="svd-tooltip"
+              >(Uses machine learning to find beans based on meaning, not just
+              keywords)</span
+            >
+          </label>
+        </div>
+      </div>
+      <div id="answer-box"></div>
     </div>
-  </aside>
-  <div class="full-body-container">
-    <div class="top-text">
-      <div class="google-colors">
-        <h1>Bean Search</h1>
-        <h2>Espresso Yourself</h2>
-      </div>
-      <div class="input-box" onclick="sendFocus()">
-        <img src="{{ url_for('static', filename='images/mag.png') }}" />
-        <input
-          placeholder="Search for a coffee bean"
-          id="filter-text-val"
-          onkeyup="filterText()"
-        />
-      </div>
-      <div class="svd-toggle-container">
-        <label class="svd-toggle">
-          <input type="checkbox" id="use-svd" onchange="filterText()" />
-          <span class="svd-toggle-label">Use SVD Search</span>
-          <span class="svd-tooltip"
-            >(Uses machine learning to find beans based on meaning, not just
-            keywords)</span
-          >
-        </label>
-      </div>
-    </div>
-    <div id="answer-box"></div>
   </div>
-</div>
   <script>
-    function answerBoxTemplate(title, titleDesc, rating, score) {
-      const scoreDisplay = score
-        ? `<p class="bean-score">Match Score: ${score}</p>`
+    function answerBoxTemplate(bean) {
+      const scoreDisplay = bean.match_score
+        ? `<p class="bean-score">Match Score: ${bean.match_score}</p>`
         : "";
       return `<div class='bean-result'>
-                <h3 class='bean-name'>${title}</h3>
-                <p class='bean-desc'>${titleDesc}</p>
-                <p class='bean-rating'>Review Rating: ${rating}</p>
+                <h3 class='bean-name'>${bean.name} [${bean.roaster} - ${bean.loc_country}]</h3>
+                <p class='bean-desc'>${bean.desc}</p>
+                <p class='bean-rating'>Review Rating: ${bean.rating}</p>
+                <p class='bean-rating'>Price (/100g): ${bean["100g_USD"]}</p>
+                <p class='bean-rating'>Roast: + ${bean.roast}</p>
+                <p class='bean-rating'>Bean Origin(s): ${bean.origin_1}, ${bean.origin_2}</p>
                 ${scoreDisplay}
             </div>`;
     }
@@ -200,12 +203,7 @@
           } else {
             data.forEach((row) => {
               let tempDiv = document.createElement("div");
-              tempDiv.innerHTML = answerBoxTemplate(
-                row.name,
-                row.desc,
-                row.rating,
-                row.score
-              );
+              tempDiv.innerHTML = answerBoxTemplate(row);
               document.getElementById("answer-box").appendChild(tempDiv);
             });
           }
@@ -219,12 +217,12 @@
     const examples = [
       "Search for a coffee bean",
       "Search for Yirgacheffe with citrus and bright floral hints",
-      "Search for nutty flavored bean from Mexico"
+      "Search for nutty flavored bean from Mexico",
     ];
 
-    const typeSpeed = 75;    
-    const deleteSpeed = 50;   
-    const pauseTime = 2000;  
+    const typeSpeed = 75;
+    const deleteSpeed = 50;
+    const pauseTime = 2000;
 
     let exampleIndex = 0;
     let charIndex = 0;
@@ -261,6 +259,5 @@
     document.addEventListener("DOMContentLoaded", () => {
       typeWriterEffect();
     });
-
   </script>
 </body>
