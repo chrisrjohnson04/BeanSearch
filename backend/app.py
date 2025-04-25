@@ -17,7 +17,7 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 json_file_path = os.path.join(current_directory, 'coffee.json')
 
 # Upload bean json
-with open(os.path.join("coffee.json"), "r") as f:
+with open(os.path.join("coffee.json"), "r", encoding='utf-8') as f:
     beans = json.load(f)
 
 app = Flask(__name__)
