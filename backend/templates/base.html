@@ -159,20 +159,31 @@
       const scoreDisplay = bean.match_score
         ? `<p class="bean-score">Match Score: ${bean.match_score}</p>`
         : "";
-      return `<div class='bean-result'>
-                <h3 class='bean-name'>${bean.name} [${bean.roaster} - ${bean.loc_country}]</h3>
-                <p class='bean-desc'>${bean.desc}</p>
-                <p class='bean-rating'>Review Rating: ${bean.rating}</p>
-                <p class='bean-rating'>Price (/100g): ${bean["100g_USD"]}</p>
-                <p class='bean-rating'>Roast: ${bean.roast}</p>
-                <p class='bean-rating'>Bean Origin(s): ${bean.origin_1}, ${bean.origin_2}</p>
-                ${scoreDisplay}
-            </div>`;
+      const sanitized = bean.name
+        .replace(/[^a-zA-Z0-9 ]/g, '')
+        .trim()
+        .toLowerCase();
+      const fileName = sanitized.split(/\s+/).join('-') + '.jpg';
+     
+      return `
+          <div class='bean-result'>
+            <img src="../static/coffeeImages/${fileName}" alt="Coffee Bean Image" />
+            <h3 class='bean-name'>${bean.name} [${bean.roaster} - ${bean.loc_country}]</h3>
+            <p class='bean-desc'>${bean.desc}</p>
+            <p class='bean-rating'>Review Rating: ${bean.rating}</p>
+            <p class='bean-rating'>Bean Score: ${bean.score}</p>
+            <p class='bean-rating'>Price (/100g): $${bean["100g_USD"]}</p>
+            <p class='bean-rating'>Roast: ${bean.roast}</p>
+            <p class='bean-rating'>Bean Origin(s): ${bean.origin_1}, ${bean.origin_2}</p>
+            ${scoreDisplay}
+          </div>`;
     }
+
 
     function sendFocus() {
       document.getElementById("filter-text-val").focus();
     }
+
 
     function updatePriceLabel() {
       const priceSlider = document.getElementById("max-price");
@@ -180,11 +191,13 @@
       priceValueDisplay.textContent = priceSlider.value;
     }
 
+
     function updateScoreLabel() {
       const scoreSlider = document.getElementById("min-score");
       const scoreValueDisplay = document.getElementById("score-value");
       scoreValueDisplay.textContent = scoreSlider.value;
     }
+
 
     function filterText() {
       document.getElementById("answer-box").innerHTML =
@@ -194,6 +207,7 @@
       const minScore = document.getElementById("min-score").value;
       const useSVD = document.getElementById("use-svd").checked;
 
+
       // Get all selected roast types
       const selectedRoasts = [];
       const checkboxes = document.querySelectorAll(
@@ -202,6 +216,7 @@
       checkboxes.forEach((checkbox) => {
         selectedRoasts.push(checkbox.value);
       });
+
 
       fetch(
         "/beans?" +
@@ -217,6 +232,7 @@
         .then((data) => {
           document.getElementById("filters-container").style.display = "block";
           document.getElementById("answer-box").innerHTML = "";
+
 
           if (data.length === 0) {
             document.getElementById("answer-box").innerHTML =
@@ -241,21 +257,26 @@
       "Search for nutty flavored bean from Mexico",
     ];
 
+
     const typeSpeed = 75;
     const deleteSpeed = 50;
     const pauseTime = 2000;
+
 
     let exampleIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
 
+
     function typeWriterEffect() {
       const input = document.getElementById("filter-text-val");
       const currentText = examples[exampleIndex];
 
+
       if (!isDeleting) {
         input.placeholder = currentText.substring(0, charIndex + 1);
         charIndex++;
+
 
         if (charIndex === currentText.length) {
           isDeleting = true;
@@ -267,6 +288,7 @@
         input.placeholder = currentText.substring(0, charIndex - 1);
         charIndex--;
 
+
         if (charIndex === 10) {
           isDeleting = false;
           exampleIndex = (exampleIndex + 1) % examples.length;
@@ -277,9 +299,33 @@
       }
     }
 
+
     document.addEventListener("DOMContentLoaded", () => {
       typeWriterEffect();
       updateScoreLabel(); // Initialize score label
     });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.bean-card');
+   
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        // If this card is already expanded, collapse it.
+        if (card.classList.contains('expanded')) {
+          card.classList.remove('expanded');
+        } else {
+          // Collapse any other expanded card.
+          document.querySelectorAll('.bean-card.expanded').forEach(openCard => {
+            openCard.classList.remove('expanded');
+          });
+          // Expand this card.
+          card.classList.add('expanded');
+        }
+      });
+    });
+  });
+
+
   </script>
 </body>
