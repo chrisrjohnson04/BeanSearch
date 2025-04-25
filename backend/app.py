@@ -57,7 +57,7 @@ def json_search(query, roast_types=None, max_price=None, use_svd=False):
         bean_copy["desc"] = obj['desc_1'] + " " + \
             obj['desc_2'] + " " + obj['desc_3']
         # Include the score for debugging purposes
-        bean_copy["score"] = round(score, 4)
+        bean_copy["match_score"] = round(score, 4)
         res.append(bean_copy)
 
     return json.dumps(res)
