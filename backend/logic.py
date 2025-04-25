@@ -13,10 +13,17 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse.linalg import svds
 from sklearn.preprocessing import normalize
 import numpy as np
+import nltk
+from nltk.stem import PorterStemmer
+
+
+# init stemmer
+stemmer = PorterStemmer()
 
 
 def tokenize(text: str) -> List[str]:
     """Returns a list of words that make up the text.
+    Words are stemmed using Porter stemmer.
 
     Parameters
     ----------
@@ -26,9 +33,12 @@ def tokenize(text: str) -> List[str]:
     Returns
     -------
     List[str]
-        A list of strings representing the words in the text.
+        A list of stemmed strings representing the words in the text.
     """
-    return re.findall(r'\b[a-z]+\b', text.lower())
+    words = re.findall(r'\b[a-z]+\b', text.lower())
+    # Apply stemming to each word
+    stemmed_words = [stemmer.stem(word) for word in words]
+    return stemmed_words
 
 
 def tokenize_beans(input_coffee) -> List[List[str]]:
@@ -186,7 +196,6 @@ def accumulate_dot_scores(query_word_counts: dict, index: dict, idf: dict) -> di
     doc_scores: dict
         Dictionary mapping from doc ID to the final accumulated score for that doc
     """
-    # TODO-7.1
     sim = {}
 
     for word, q_tf in query_word_counts.items():
@@ -329,6 +338,9 @@ def filtered_search(query, inv_idx, idf, doc_norms, beans, roast_types=None, max
     max_price: float, optional
         Maximum price per 100g in USD
 
+    min_score: float, optional
+        Minimum bean score
+
     Returns:
     ========
     List of tuples (score, doc_id)
@@ -367,8 +379,14 @@ class SVDSearch:
             for bean in self.beans
         ]
 
+        # Use a custom analyzer that applies stemming
         self.vectorizer = TfidfVectorizer(
-            stop_words='english', max_df=0.7, min_df=2)
+            # Use our custom tokenizer with stemming
+            analyzer=lambda text: tokenize(text),
+            stop_words='english',
+            max_df=0.7,
+            min_df=2
+        )
         self.td_matrix = self.vectorizer.fit_transform(combined_descriptions)
 
         self.docs_compressed, self.singular_values, vt = svds(
@@ -397,6 +415,8 @@ class SVDSearch:
             List of roast types to filter by
         max_price: float, optional
             Maximum price per 100g in USD
+        min_score: float, optional
+            Minimum bean score
         k: int
             Number of results to return
 
@@ -405,6 +425,7 @@ class SVDSearch:
         List of tuples (score, doc_id)
             Top k results sorted by similarity
         """
+        # Use our stemming tokenizer for query processing
         query_tfidf = self.vectorizer.transform([query]).toarray()
 
         query_vec = np.dot(query_tfidf, self.words_compressed)
