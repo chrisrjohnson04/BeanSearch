@@ -34,6 +34,7 @@
   font-size: 18px;
   color: #4a4a4a;
 }
+
 .input-box {
   border-radius: 50px;
   display: flex;
@@ -78,64 +79,36 @@
   z-index: 1000;
 }
 
-.roast-filter {
-  position: relative;
+/* Updated Roast Filter Styles */
+.roast-checkbox-container {
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #f8f8f8;
+  font-family: "Montserrat", sans-serif;
   margin-bottom: 10px;
 }
 
-.roast-dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.roast-dropbtn {
-  background-color: #f8f8f8;
-  color: #333;
-  padding: 10px 15px;
+.roast-checkbox-container h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
   font-size: 16px;
-  border: 1px solid black;
-  border-radius: 50px;
-  cursor: pointer;
-  font-family: "Montserrat", sans-serif;
-  transition: background-color 0.3s;
+  color: #333;
 }
 
-.roast-dropbtn:hover {
-  background-color: #f1f1f1;
-}
-
-.roast-dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #fff;
-  min-width: 180px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  padding: 10px;
-  border-radius: 8px;
-  margin-top: 5px;
-  border: 1px solid #ddd;
-}
-
-.roast-dropdown-content label {
+.roast-checkbox-container label {
   display: block;
-  padding: 8px 10px;
+  padding: 5px 0;
   cursor: pointer;
-  font-family: "Montserrat", sans-serif;
-  transition: background-color 0.2s;
+  transition: color 0.2s;
 }
 
-.roast-dropdown-content label:hover {
-  background-color: #f1f1f1;
-  border-radius: 4px;
+.roast-checkbox-container label:hover {
+  color: #358f38;
 }
 
-.roast-dropdown-content input[type="checkbox"] {
+.roast-checkbox-container input[type="checkbox"] {
   margin-right: 8px;
-}
-
-.show {
-  display: block;
 }
 
 .price-slider-container,
@@ -168,6 +141,142 @@
   font-size: 12px;
   color: #666;
   padding: 0 2px;
+}
+
+/* Improved SVD toggle styles */
+.svd-toggle-container {
+  margin: 15px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.svd-switch-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  padding: 8px 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.svd-switch-wrapper:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.svd-switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.svd-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.svd-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.svd-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .svd-slider {
+  background-color: #358f38;
+}
+
+input:focus + .svd-slider {
+  box-shadow: 0 0 1px #358f38;
+}
+
+input:checked + .svd-slider:before {
+  transform: translateX(22px);
+}
+
+.svd-switch-label {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.svd-tooltip {
+  position: relative;
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background-color: #358f38;
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  font-style: italic;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: 220px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+.svd-tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
 
 #answer-box {
