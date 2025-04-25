@@ -26,13 +26,13 @@
 .google-colors h1 {
   margin-bottom: 0;
   margin-right: 3px;
-  color: #358F38;
+  color: #358f38;
 }
 
 .google-colors h2 {
   margin-top: 0;
   font-size: 18px;
-  color: #4A4A4A;
+  color: #4a4a4a;
 }
 .input-box {
   border-radius: 50px;
@@ -41,7 +41,7 @@
   margin-top: 10px;
   padding: 12px;
   width: 600px;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
   margin-bottom: 10px;
 }
 
@@ -138,27 +138,31 @@
   display: block;
 }
 
-
-.price-slider-container {
+.price-slider-container,
+.score-slider-container {
   border: 1px solid black;
   border-radius: 8px;
   padding: 15px;
   background-color: #f8f8f8;
   font-family: "Montserrat", sans-serif;
+  margin-bottom: 10px;
 }
 
-.price-slider-container label {
+.price-slider-container label,
+.score-slider-container label {
   display: block;
   margin-bottom: 10px;
   font-size: 16px;
 }
 
-#max-price {
+#max-price,
+#min-score {
   width: 100%;
   margin-bottom: 5px;
 }
 
-.price-ticks {
+.price-ticks,
+.score-ticks {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
@@ -181,6 +185,32 @@
   font-family: "Montserrat", sans-serif;
 }
 
+.bean-rating,
+.bean-score {
+  font-family: "Montserrat", sans-serif;
+  margin: 5px 0;
+}
+
+.bean-score {
+  font-weight: bold;
+  color: #358f38;
+}
+
+.bean-result {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.bean-result:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
 .no-results {
   font-family: "Montserrat", sans-serif;
   text-align: center;
@@ -193,4 +223,24 @@
   text-align: center;
   padding: 20px;
   color: #d32f2f;
+}
+
+.loading {
+  font-family: "Montserrat", sans-serif;
+  text-align: center;
+  padding: 20px;
+  color: #358f38;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }

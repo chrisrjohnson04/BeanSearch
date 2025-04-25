@@ -212,6 +212,7 @@ def index_search(
     tokenizer=tokenize,
     roast_filter=None,
     max_price=None,
+    min_score=None,
     beans=None
 ) -> List[Tuple[int, int]]:
     """Search the collection of documents for the given query
@@ -241,8 +242,11 @@ def index_search(
     max_price: float, optional
         Maximum price per 100g in USD. Only beans with price <= max_price will be included.
 
+    min_score: float, optional
+        Minimum bean score. Only beans with score >= min_score will be included.
+
     beans: list of dictionaries, optional
-        Original bean data needed for filtering. Required if roast_filter or max_price is provided.
+        Original bean data needed for filtering. Required if roast_filter, max_price, or min_score is provided.
 
     Returns
     =======
@@ -284,6 +288,13 @@ def index_search(
                 if bean_price is None or float(bean_price) > float(max_price):
                     continue
 
+            # Apply score filter if specified
+            if min_score is not None:
+                bean_score = beans[doc_id].get('rating')
+                # Skip if score is missing or below the minimum
+                if bean_score is None or float(bean_score) < float(min_score):
+                    continue
+
         cosine_dict[doc_id] = dot_val / (query_norm * doc_norms[doc_id]
                                          ) if query_norm > 0 and doc_norms[doc_id] > 0 else 0
 
@@ -292,7 +303,7 @@ def index_search(
     return results[:10]  # Limit to top 10 results after filtering
 
 
-def filtered_search(query, inv_idx, idf, doc_norms, beans, roast_types=None, max_price=None):
+def filtered_search(query, inv_idx, idf, doc_norms, beans, roast_types=None, max_price=None, min_score=None):
     """Wrapper function to search with filtering
 
     Arguments:
@@ -324,7 +335,8 @@ def filtered_search(query, inv_idx, idf, doc_norms, beans, roast_types=None, max
         Top 10 matching results after filtering
     """
     return index_search(query, inv_idx, idf, doc_norms,
-                        roast_filter=roast_types, max_price=max_price, beans=beans)
+                        roast_filter=roast_types, max_price=max_price,
+                        min_score=min_score, beans=beans)
 
 
 class SVDSearch:
@@ -374,7 +386,7 @@ class SVDSearch:
 
         return self
 
-    def search(self, query, roast_types=None, max_price=None, k=10):
+    def search(self, query, roast_types=None, max_price=None, min_score=None, k=10):
         """Search for beans similar to query in latent space
 
         Parameters:
@@ -409,6 +421,11 @@ class SVDSearch:
             if max_price is not None:
                 bean_price = self.beans[doc_id].get('100g_USD')
                 if bean_price is None or float(bean_price) > float(max_price):
+                    continue
+
+            if min_score is not None:
+                bean_score = self.beans[doc_id].get('rating')
+                if bean_score is None or float(bean_score) < float(min_score):
                     continue
 
             results.append((float(sim), doc_id))

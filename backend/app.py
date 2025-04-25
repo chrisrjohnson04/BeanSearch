@@ -38,17 +38,18 @@ svd_search.build_model()
 print("SVD model built successfully!")
 
 
-def json_search(query, roast_types=None, max_price=None, use_svd=False):
-    """Search function that supports both roast and price filtering,
+def json_search(query, roast_types=None, max_price=None, min_score=None, use_svd=False):
+    """Search function that supports roast, price, and score filtering,
     with option to use SVD-based semantic search"""
 
     if use_svd:
         print(f"Using SVD search with query: '{query}'")
-        search_results = svd_search.search(query, roast_types, max_price)
+        search_results = svd_search.search(
+            query, roast_types, max_price, min_score)
     else:
         print(f"Using traditional search with query: '{query}'")
         search_results = logic.filtered_search(
-            query, inv_idx, idf, doc_norms, beans, roast_types, max_price)
+            query, inv_idx, idf, doc_norms, beans, roast_types, max_price, min_score)
 
     res = []
     for score, bean_id in search_results:
@@ -73,6 +74,7 @@ def beans_search():
     text = request.args.get("bean_query", "")
     roast_types_param = request.args.get("roast_types", "")
     max_price = request.args.get("max_price")
+    min_score = request.args.get("min_score")
     use_svd = request.args.get("use_svd", "false").lower() == "true"
 
     # Parse roast types from URL params
@@ -86,7 +88,14 @@ def beans_search():
         except ValueError:
             max_price = None
 
-    return json_search(text, roast_types if roast_types else None, max_price, use_svd)
+    # Convert min_score to float if provided
+    if min_score:
+        try:
+            min_score = float(min_score)
+        except ValueError:
+            min_score = None
+
+    return json_search(text, roast_types if roast_types else None, max_price, min_score, use_svd)
 
 
 if 'DB_NAME' not in os.environ:

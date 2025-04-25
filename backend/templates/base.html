@@ -92,6 +92,34 @@
           </div>
         </div>
       </div>
+      <!-- New Min Score Filter -->
+      <div class="score-filter">
+        <div class="score-slider-container">
+          <label for="min-score"
+            >Min Bean Score: <span id="score-value">70</span></label
+          >
+          <input
+            type="range"
+            id="min-score"
+            name="min-score"
+            min="70"
+            max="100"
+            step="1"
+            value="70"
+            onchange="updateScoreLabel(); filterText();"
+            oninput="updateScoreLabel();"
+          />
+          <div class="score-ticks">
+            <span>70</span>
+            <span>75</span>
+            <span>80</span>
+            <span>85</span>
+            <span>90</span>
+            <span>95</span>
+            <span>100</span>
+          </div>
+        </div>
+      </div>
     </aside>
     <div class="full-body-container">
       <div class="top-text">
@@ -130,8 +158,9 @@
                 <h3 class='bean-name'>${bean.name} [${bean.roaster} - ${bean.loc_country}]</h3>
                 <p class='bean-desc'>${bean.desc}</p>
                 <p class='bean-rating'>Review Rating: ${bean.rating}</p>
+                <p class='bean-rating'>Bean Score: ${bean.score}</p>
                 <p class='bean-rating'>Price (/100g): ${bean["100g_USD"]}</p>
-                <p class='bean-rating'>Roast: + ${bean.roast}</p>
+                <p class='bean-rating'>Roast: ${bean.roast}</p>
                 <p class='bean-rating'>Bean Origin(s): ${bean.origin_1}, ${bean.origin_2}</p>
                 ${scoreDisplay}
             </div>`;
@@ -149,6 +178,12 @@
       const priceSlider = document.getElementById("max-price");
       const priceValueDisplay = document.getElementById("price-value");
       priceValueDisplay.textContent = priceSlider.value;
+    }
+
+    function updateScoreLabel() {
+      const scoreSlider = document.getElementById("min-score");
+      const scoreValueDisplay = document.getElementById("score-value");
+      scoreValueDisplay.textContent = scoreSlider.value;
     }
 
     // Close the dropdown if the user clicks outside of it
@@ -171,6 +206,7 @@
         "<div class='loading'>Searching beans...</div>";
       const searchQuery = document.getElementById("filter-text-val").value;
       const maxPrice = document.getElementById("max-price").value;
+      const minScore = document.getElementById("min-score").value;
       const useSVD = document.getElementById("use-svd").checked;
 
       // Get all selected roast types
@@ -188,6 +224,7 @@
             bean_query: searchQuery,
             roast_types: selectedRoasts.join(","),
             max_price: maxPrice,
+            min_score: minScore,
             use_svd: useSVD,
           }).toString()
       )
@@ -257,6 +294,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       typeWriterEffect();
+      updateScoreLabel(); // Initialize score label
     });
   </script>
 </body>
