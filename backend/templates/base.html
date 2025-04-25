@@ -9,7 +9,7 @@
 />
 <body>
   <div id="everything">
-    <aside id="filters-container" style="display: none">
+    <aside class="sidebar" id="filters-container" style="display: none">
       <!-- Updated Roast Filter - directly showing checkboxes -->
       <div class="roast-filter">
         <div class="roast-checkbox-container">
@@ -61,6 +61,7 @@
           </label>
         </div>
       </div>
+      <hr class="rounded">
       <div class="price-filter">
         <div class="price-slider-container">
           <label for="max-price"
@@ -79,16 +80,11 @@
           />
           <div class="price-ticks">
             <span>$5</span>
-            <span>$10</span>
-            <span>$15</span>
-            <span>$20</span>
-            <span>$25</span>
-            <span>$30</span>
-            <span>$35</span>
             <span>$40</span>
           </div>
         </div>
       </div>
+      <hr class="rounded">
       <div class="score-filter">
         <div class="score-slider-container">
           <label for="min-score"
@@ -167,7 +163,7 @@
      
       return `
           <div class='bean-result'>
-            <img src="../static/coffeeImages/${fileName}" alt="Coffee Bean Image" />
+            <img src="../static/coffeeImages/${fileName}" alt="Coffee Bean Image" onerror="this.onerror=null; this.src='../static/coffeeImages/no-image-available.png';"/>
             <h3 class='bean-name'>${bean.name} [${bean.roaster} - ${bean.loc_country}]</h3>
             <p class='bean-desc'>${bean.desc}</p>
             <p class='bean-rating'>Review Rating: ${bean.rating}</p>
@@ -179,11 +175,9 @@
           </div>`;
     }
 
-
     function sendFocus() {
       document.getElementById("filter-text-val").focus();
     }
-
 
     function updatePriceLabel() {
       const priceSlider = document.getElementById("max-price");
@@ -191,13 +185,11 @@
       priceValueDisplay.textContent = priceSlider.value;
     }
 
-
     function updateScoreLabel() {
       const scoreSlider = document.getElementById("min-score");
       const scoreValueDisplay = document.getElementById("score-value");
       scoreValueDisplay.textContent = scoreSlider.value;
     }
-
 
     function filterText() {
       document.getElementById("answer-box").innerHTML =
@@ -207,7 +199,6 @@
       const minScore = document.getElementById("min-score").value;
       const useSVD = document.getElementById("use-svd").checked;
 
-
       // Get all selected roast types
       const selectedRoasts = [];
       const checkboxes = document.querySelectorAll(
@@ -216,7 +207,6 @@
       checkboxes.forEach((checkbox) => {
         selectedRoasts.push(checkbox.value);
       });
-
 
       fetch(
         "/beans?" +
@@ -232,7 +222,6 @@
         .then((data) => {
           document.getElementById("filters-container").style.display = "block";
           document.getElementById("answer-box").innerHTML = "";
-
 
           if (data.length === 0) {
             document.getElementById("answer-box").innerHTML =
@@ -256,28 +245,19 @@
       "Search for Yirgacheffe with citrus and bright floral hints",
       "Search for nutty flavored bean from Mexico",
     ];
-
-
     const typeSpeed = 75;
     const deleteSpeed = 50;
     const pauseTime = 2000;
-
-
     let exampleIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
 
-
     function typeWriterEffect() {
       const input = document.getElementById("filter-text-val");
       const currentText = examples[exampleIndex];
-
-
       if (!isDeleting) {
         input.placeholder = currentText.substring(0, charIndex + 1);
         charIndex++;
-
-
         if (charIndex === currentText.length) {
           isDeleting = true;
           setTimeout(typeWriterEffect, pauseTime);
@@ -287,8 +267,6 @@
       } else {
         input.placeholder = currentText.substring(0, charIndex - 1);
         charIndex--;
-
-
         if (charIndex === 10) {
           isDeleting = false;
           exampleIndex = (exampleIndex + 1) % examples.length;
@@ -299,33 +277,16 @@
       }
     }
 
-
     document.addEventListener("DOMContentLoaded", () => {
       typeWriterEffect();
-      updateScoreLabel(); // Initialize score label
+      updateScoreLabel(); 
+      document.getElementById('answer-box').addEventListener('click', (e) => {
+      const card = e.target.closest('.bean-result');
+      if (!card) return;                    
+      console.log('Card clicked:', card);
+      card.classList.toggle('expanded');
     });
-
-
-    document.addEventListener('DOMContentLoaded', function() {
-    const cards = document.querySelectorAll('.bean-card');
-   
-    cards.forEach(card => {
-      card.addEventListener('click', () => {
-        // If this card is already expanded, collapse it.
-        if (card.classList.contains('expanded')) {
-          card.classList.remove('expanded');
-        } else {
-          // Collapse any other expanded card.
-          document.querySelectorAll('.bean-card.expanded').forEach(openCard => {
-            openCard.classList.remove('expanded');
-          });
-          // Expand this card.
-          card.classList.add('expanded');
-        }
-      });
     });
-  });
-
 
   </script>
 </body>

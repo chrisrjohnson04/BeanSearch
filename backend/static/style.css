@@ -10,11 +10,13 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-left:15%;
 }
 
 
 #everything {
-  position: relative;
+  display: grid;
+  height: 100vh;     
 }
 
 
@@ -81,20 +83,14 @@
   transform: translateY(-50%);
   width: 15%;
   background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
   padding: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 }
 
 
 /* Updated Roast Filter Styles */
 .roast-checkbox-container {
-  border: 1px solid black;
-  border-radius: 8px;
   padding: 15px;
-  background-color: #f8f8f8;
   font-family: "Montserrat", sans-serif;
   margin-bottom: 10px;
 }
@@ -128,10 +124,8 @@
 
 .price-slider-container,
 .score-slider-container {
-  border: 1px solid black;
-  border-radius: 8px;
+
   padding: 15px;
-  background-color: #f8f8f8;
   font-family: "Montserrat", sans-serif;
   margin-bottom: 10px;
 }
@@ -314,13 +308,6 @@ input:checked + .svd-slider:before {
 }
 
 
-#answer-box {
-  width: 700px;
-  margin-top: 50px;
-  align-items: center;
-  justify-content: center;
-}
-
 
 .bean-name {
   font-family: "Kanit", sans-serif;
@@ -353,6 +340,7 @@ input:checked + .svd-slider:before {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
+  width: 300px;
 }
 
 
@@ -404,8 +392,9 @@ input:checked + .svd-slider:before {
 
 /* Grid Layout */
 #answer-box {
+  margin-left: 25%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   padding: 1rem;
 }
@@ -427,7 +416,6 @@ input:checked + .svd-slider:before {
   transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 
@@ -495,5 +483,30 @@ input:checked + .svd-slider:before {
   }
 }
 
+hr.rounded {
+  border-top: 1px solid #bbb;
+  border-radius: 5px;
+}
 
+.bean-result img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  margin: auto;
+}
+
+.bean-result .bean-desc {
+  display: -webkit-box; 
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;  
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}                                   
+
+
+.bean-result.expanded .bean-desc {
+  display: block;       
+  -webkit-line-clamp: unset;
+  overflow: visible;  
+}
 
