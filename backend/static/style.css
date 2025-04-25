@@ -24,14 +24,14 @@
   font-size: 48px;
   text-align: center;
   justify-content: center;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Super Funky";
 }
 
 
 .google-colors h1 {
   margin-bottom: 0;
   margin-right: 3px;
-  color: #358f38;
+  color: #49111C;
 }
 
 
@@ -39,6 +39,7 @@
   margin-top: 0;
   font-size: 18px;
   color: #4a4a4a;
+  font-family: sans-serif;
 }
 
 
