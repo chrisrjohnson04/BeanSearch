@@ -22,24 +22,31 @@
 
 .google-colors {
   font-size: 48px;
+  display: flex;
+  flex-direction: row;
   text-align: center;
   justify-content: center;
-  font-family: "Super Funky";
+  font-family:"Righteous";
 }
 
 
-.google-colors h1 {
+#beantitle{
   margin-bottom: 0;
   margin-right: 3px;
-  color: #49111C;
+  color: #C05500;
 }
 
+#searchtitle{
+  margin-bottom: 0;
+  margin-right: 3px;
+  color: black;
+}
 
-.google-colors h2 {
+h2 {
   margin-top: 0;
-  font-size: 18px;
+  font-size: 20px;
   color: #4a4a4a;
-  font-family: sans-serif;
+  font-family: "Righteous";
 }
 
 
