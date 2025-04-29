@@ -3,7 +3,10 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href='https://fonts.googleapis.com/css?family=Righteous' rel='stylesheet'>
+<link
+  href="https://fonts.googleapis.com/css?family=Righteous"
+  rel="stylesheet"
+/>
 <link
   href="https://fonts.googleapis.com/css2?family=Kanit&family=Montserrat&family=Open+Sans:wght@500&display=swap"
   rel="stylesheet"
@@ -62,7 +65,7 @@
           </label>
         </div>
       </div>
-      <hr class="rounded">
+      <hr class="rounded" />
       <div class="price-filter">
         <div class="price-slider-container">
           <label for="max-price"
@@ -85,11 +88,11 @@
           </div>
         </div>
       </div>
-      <hr class="rounded">
+      <hr class="rounded" />
       <div class="score-filter">
         <div class="score-slider-container">
           <label for="min-score"
-            >Min Bean Score: <span id="score-value">70</span></label
+            >Min Review Score: <span id="score-value">70</span></label
           >
           <input
             type="range"
@@ -117,7 +120,7 @@
     <div class="full-body-container">
       <div class="top-text">
         <div class="google-colors">
-          <h1 id="beantitle">Bean </h1>
+          <h1 id="beantitle">Bean</h1>
           <h1 id="searchtitle">Search</h1>
         </div>
         <h2>Espresso Yourself!</h2>
@@ -158,18 +161,17 @@
         ? `<p class="bean-score">Match Score: ${bean.match_score}</p>`
         : "";
       const sanitized = bean.name
-        .replace(/[^a-zA-Z0-9 ]/g, '')
+        .replace(/[^a-zA-Z0-9 ]/g, "")
         .trim()
         .toLowerCase();
-      const fileName = sanitized.split(/\s+/).join('-') + '.jpg';
-     
+      const fileName = sanitized.split(/\s+/).join("-") + ".jpg";
+
       return `
           <div class='bean-result'>
             <img src="../static/coffeeImages/${fileName}" alt="Coffee Bean Image" onerror="this.onerror=null; this.src='../static/coffeeImages/no-image-available.png';"/>
             <h3 class='bean-name'>${bean.name} [${bean.roaster} - ${bean.loc_country}]</h3>
             <p class='bean-desc'>${bean.desc}</p>
-            <p class='bean-rating'>Review Rating: ${bean.rating}</p>
-            <p class='bean-rating'>Bean Score: ${bean.score}</p>
+            <p class='bean-rating'>Review Score: ${bean.rating}</p>
             <p class='bean-rating'>Price (/100g): $${bean["100g_USD"]}</p>
             <p class='bean-rating'>Roast: ${bean.roast}</p>
             <p class='bean-rating'>Bean Origin(s): ${bean.origin_1}, ${bean.origin_2}</p>
@@ -281,14 +283,13 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       typeWriterEffect();
-      updateScoreLabel(); 
-      document.getElementById('answer-box').addEventListener('click', (e) => {
-      const card = e.target.closest('.bean-result');
-      if (!card) return;                    
-      console.log('Card clicked:', card);
-      card.classList.toggle('expanded');
+      updateScoreLabel();
+      document.getElementById("answer-box").addEventListener("click", (e) => {
+        const card = e.target.closest(".bean-result");
+        if (!card) return;
+        console.log("Card clicked:", card);
+        card.classList.toggle("expanded");
+      });
     });
-    });
-
   </script>
 </body>
