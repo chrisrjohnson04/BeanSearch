@@ -156,6 +156,8 @@
     </div>
   </div>
   <script>
+    let dimensionWords = null; // Store dimension_words globally
+
     function answerBoxTemplate(bean) {
       const scoreDisplay = bean.match_score
         ? `<p class="bean-score">Match Score: ${bean.match_score}</p>`
@@ -166,17 +168,37 @@
         .toLowerCase();
       const fileName = sanitized.split(/\s+/).join("-") + ".jpg";
 
-      return `
-          <div class='bean-result'>
-            <img src="../static/coffeeImages/${fileName}" alt="Coffee Bean Image" onerror="this.onerror=null; this.src='../static/coffeeImages/no-image-available.png';"/>
-            <h3 class='bean-name'>${bean.name} [${bean.roaster} - ${bean.loc_country}]</h3>
-            <p class='bean-desc'>${bean.desc}</p>
-            <p class='bean-rating'>Review Score: ${bean.rating}</p>
-            <p class='bean-rating'>Price (/100g): $${bean["100g_USD"]}</p>
-            <p class='bean-rating'>Roast: ${bean.roast}</p>
-            <p class='bean-rating'>Bean Origin(s): ${bean.origin_1}, ${bean.origin_2}</p>
-            ${scoreDisplay}
+      // Display latent contributions with word labels if available
+      let contributionsDisplay = "";
+      if (bean.latent_contributions && bean.latent_contributions.length > 0 && dimensionWords) {
+        // Sort contributions by absolute value and take top 5
+        const sortedContributions = bean.latent_contributions
+          .map((value, index) => ({ index, value }))
+          .sort((a, b) => Math.abs(b.value) - Math.abs(a.value))
+          .slice(0, 5); // Limit to top 5 for brevity
+        contributionsDisplay = `
+          <div class="latent-contributions">
+            <p>Top Themes: ${sortedContributions
+              .map((c) => {
+                const words = dimensionWords[c.index] ? dimensionWords[c.index].join(", ") : `Dim ${c.index + 1}`;
+                return `${words}: ${c.value.toFixed(4)}`;
+              })
+              .join(", ")}</p>
           </div>`;
+      }
+
+      return `
+        <div class='bean-result'>
+          <img src="../static/coffeeImages/${fileName}" alt="Coffee Bean Image" onerror="this.onerror=null; this.src='../static/coffeeImages/no-image-available.png';"/>
+          <h3 class='bean-name'>${bean.name} [${bean.roaster} - ${bean.loc_country}]</h3>
+          <p class='bean-desc'>${bean.desc}</p>
+          <p class='bean-rating'>Review Score: ${bean.rating}</p>
+          <p class='bean-rating'>Price (/100g): $${bean["100g_USD"]}</p>
+          <p class='bean-rating'>Roast: ${bean.roast}</p>
+          <p class='bean-rating'>Bean Origin(s): ${bean.origin_1}, ${bean.origin_2}</p>
+          ${scoreDisplay}
+          ${contributionsDisplay}
+        </div>`;
     }
 
     function sendFocus() {
@@ -227,11 +249,15 @@
           document.getElementById("filters-container").style.display = "block";
           document.getElementById("answer-box").innerHTML = "";
 
-          if (data.length === 0) {
+          // Handle new response structure
+          const results = data.results || [];
+          dimensionWords = data.dimension_words || null;
+
+          if (results.length === 0) {
             document.getElementById("answer-box").innerHTML =
               "<p class='no-results'>No matching coffee beans found. Try adjusting your filters or search terms.</p>";
           } else {
-            data.forEach((row) => {
+            results.forEach((row) => {
               let tempDiv = document.createElement("div");
               tempDiv.innerHTML = answerBoxTemplate(row);
               document.getElementById("answer-box").appendChild(tempDiv);
@@ -244,6 +270,7 @@
             "<p class='error-message'>Error loading results. Please try again.</p>";
         });
     }
+
     const examples = [
       "Search for a coffee bean",
       "Search for Yirgacheffe with citrus and bright floral hints",

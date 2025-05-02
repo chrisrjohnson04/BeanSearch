@@ -59,16 +59,28 @@ def json_search(query, roast_types=None, max_price=None, min_score=None, use_svd
             query, inv_idx, idf, doc_norms, beans, roast_types, max_price, min_score)
 
     res = []
-    for score, bean_id in search_results:
+    for result in search_results:
+        if use_svd:
+            score, bean_id, latent_contributions = result
+        else:
+            score, bean_id = result
+            latent_contributions = None
         obj = beans[bean_id]
         bean_copy = obj.copy()
         bean_copy["desc"] = obj['desc_1'] + " " + \
             obj['desc_2'] + " " + obj['desc_3']
         # Include the score for debugging purposes
         bean_copy["match_score"] = round(score, 4)
+        if latent_contributions is not None:
+            bean_copy["latent_contributions"] = [round(contrib, 4) for contrib in latent_contributions]
         res.append(bean_copy)
 
-    return json.dumps(res)
+    response = {
+        "results": res,
+        "dimension_words": svd_search.dimension_words if use_svd else None
+    }
+
+    return json.dumps(response)
 
 
 @app.route("/")

@@ -13,12 +13,10 @@
   margin-left:15%;
 }
 
-
 #everything {
   display: grid;
   height: 100vh;     
 }
-
 
 .google-colors {
   font-size: 48px;
@@ -28,7 +26,6 @@
   justify-content: center;
   font-family:"Righteous";
 }
-
 
 #beantitle{
   margin-bottom: 0;
@@ -49,7 +46,6 @@ h2 {
   font-family: "Righteous";
 }
 
-
 .input-box {
   border-radius: 50px;
   display: flex;
@@ -61,19 +57,16 @@ h2 {
   margin-bottom: 10px;
 }
 
-
 .input-box img {
   height: 20px;
   width: 20px;
 }
-
 
 .top-text {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-
 
 .input-box input {
   width: 100%;
@@ -82,7 +75,6 @@ h2 {
   border: none;
   outline: 0;
 }
-
 
 #filters-container {
   position: fixed;
@@ -95,14 +87,12 @@ h2 {
   z-index: 1000;
 }
 
-
 /* Updated Roast Filter Styles */
 .roast-checkbox-container {
   padding: 15px;
   font-family: "Montserrat", sans-serif;
   margin-bottom: 10px;
 }
-
 
 .roast-checkbox-container h3 {
   margin-top: 0;
@@ -111,7 +101,6 @@ h2 {
   color: #333;
 }
 
-
 .roast-checkbox-container label {
   display: block;
   padding: 5px 0;
@@ -119,25 +108,20 @@ h2 {
   transition: color 0.2s;
 }
 
-
 .roast-checkbox-container label:hover {
   color: #358f38;
 }
-
 
 .roast-checkbox-container input[type="checkbox"] {
   margin-right: 8px;
 }
 
-
 .price-slider-container,
 .score-slider-container {
-
   padding: 15px;
   font-family: "Montserrat", sans-serif;
   margin-bottom: 10px;
 }
-
 
 .price-slider-container label,
 .score-slider-container label {
@@ -146,13 +130,11 @@ h2 {
   font-size: 16px;
 }
 
-
 #max-price,
 #min-score {
   width: 100%;
   margin-bottom: 5px;
 }
-
 
 .price-ticks,
 .score-ticks {
@@ -163,14 +145,12 @@ h2 {
   padding: 0 2px;
 }
 
-
 /* Improved SVD toggle styles */
 .svd-toggle-container {
   margin: 15px 0;
   display: flex;
   justify-content: center;
 }
-
 
 .svd-switch-wrapper {
   display: flex;
@@ -183,12 +163,10 @@ h2 {
   transition: all 0.3s ease;
 }
 
-
 .svd-switch-wrapper:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
 }
-
 
 .svd-switch {
   position: relative;
@@ -198,13 +176,11 @@ h2 {
   margin-right: 10px;
 }
 
-
 .svd-switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
 
 .svd-slider {
   position: absolute;
@@ -218,7 +194,6 @@ h2 {
   border-radius: 34px;
 }
 
-
 .svd-slider:before {
   position: absolute;
   content: "";
@@ -231,21 +206,17 @@ h2 {
   border-radius: 50%;
 }
 
-
 input:checked + .svd-slider {
   background-color: #358f38;
 }
-
 
 input:focus + .svd-slider {
   box-shadow: 0 0 1px #358f38;
 }
 
-
 input:checked + .svd-slider:before {
   transform: translateX(22px);
 }
-
 
 .svd-switch-label {
   font-family: "Montserrat", sans-serif;
@@ -254,13 +225,11 @@ input:checked + .svd-slider:before {
   align-items: center;
 }
 
-
 .svd-tooltip {
   position: relative;
   display: inline-block;
   margin-left: 8px;
 }
-
 
 .info-icon {
   display: inline-flex;
@@ -276,7 +245,6 @@ input:checked + .svd-slider:before {
   font-weight: bold;
   cursor: pointer;
 }
-
 
 .tooltip-text {
   visibility: hidden;
@@ -297,7 +265,6 @@ input:checked + .svd-slider:before {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-
 .tooltip-text::after {
   content: "";
   position: absolute;
@@ -309,23 +276,18 @@ input:checked + .svd-slider:before {
   border-color: #333 transparent transparent transparent;
 }
 
-
 .svd-tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
 }
 
-
-
 .bean-name {
   font-family: "Kanit", sans-serif;
 }
 
-
 .bean-desc {
   font-family: "Montserrat", sans-serif;
 }
-
 
 .bean-rating,
 .bean-score {
@@ -333,12 +295,10 @@ input:checked + .svd-slider:before {
   margin: 5px 0;
 }
 
-
 .bean-score {
   font-weight: bold;
   color: #358f38;
 }
-
 
 .bean-result {
   border: 1px solid #ddd;
@@ -351,12 +311,10 @@ input:checked + .svd-slider:before {
   width: 300px;
 }
 
-
 .bean-result:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
-
 
 .no-results {
   font-family: "Montserrat", sans-serif;
@@ -365,14 +323,12 @@ input:checked + .svd-slider:before {
   color: #666;
 }
 
-
 .error-message {
   font-family: "Montserrat", sans-serif;
   text-align: center;
   padding: 20px;
   color: #d32f2f;
 }
-
 
 .loading {
   font-family: "Montserrat", sans-serif;
@@ -381,7 +337,6 @@ input:checked + .svd-slider:before {
   color: #358f38;
   animation: pulse 1.5s infinite;
 }
-
 
 @keyframes pulse {
   0% {
@@ -395,9 +350,6 @@ input:checked + .svd-slider:before {
   }
 }
 
-
-
-
 /* Grid Layout */
 #answer-box {
   margin-left: 25%;
@@ -407,13 +359,11 @@ input:checked + .svd-slider:before {
   padding: 1rem;
 }
 
-
 /* Clickable wrapper */
 .bean-card-link {
   text-decoration: none;
   color: inherit;
 }
-
 
 /* Card styling */
 .bean-result {
@@ -426,13 +376,11 @@ input:checked + .svd-slider:before {
   flex-direction: column;
 }
 
-
 .bean-result:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
   cursor: pointer;
 }
-
 
 /* Placeholder image */
 .bean-image-placeholder {
@@ -443,7 +391,6 @@ input:checked + .svd-slider:before {
   margin-bottom: 1rem;
 }
 
-
 /* Extended description */
 .bean-desc {
   font-family: "Montserrat", sans-serif;
@@ -453,18 +400,15 @@ input:checked + .svd-slider:before {
   line-height: 1.5;
 }
 
-
 .cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1rem;        /* space between cards */
 }
 
-
 .bean-card {
   cursor: pointer;  /* indicate clickable card */
 }
-
 
 /* Truncate description to 3 lines with ellipsis */
 .bean-card .description {
@@ -475,14 +419,12 @@ input:checked + .svd-slider:before {
   text-overflow: ellipsis;
 }
 
-
 /* Expanded card: show full description */
 .bean-card.expanded .description {
   display: block;       /* remove -webkit-box to disable line-clamp */
   overflow: visible;
   -webkit-line-clamp: unset;
 }
-
 
 /* Mobile responsiveness: single column on narrow screens */
 @media (max-width: 600px) {
@@ -511,10 +453,20 @@ hr.rounded {
   text-overflow: ellipsis; 
 }                                   
 
-
 .bean-result.expanded .bean-desc {
   display: block;       
   -webkit-line-clamp: unset;
   overflow: visible;  
 }
 
+/* Latent contributions styling */
+.latent-contributions {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: #358f38;
+  font-family: "Montserrat", sans-serif;
+}
+
+.latent-contributions p {
+  margin: 5px 0;
+}

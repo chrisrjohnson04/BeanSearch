@@ -371,6 +371,7 @@ class SVDSearch:
         self.singular_values = None
         self.docs_compressed_normed = None
         self.words_compressed_normed = None
+        self.dimension_words = None
 
     def build_model(self):
         """Build the SVD model from bean descriptions"""
@@ -402,7 +403,21 @@ class SVDSearch:
         self.docs_compressed_normed = normalize(self.docs_compressed)
         self.words_compressed_normed = normalize(self.words_compressed)
 
+        self.dimension_words = self._get_top_words_per_dimension(top_n=3)
+
         return self
+    
+
+    def _get_top_words_per_dimension(self, top_n=3):
+        feature_names = self.vectorizer.get_feature_names_out()
+        dimension_words = []
+        for dim in range(self.n_components):
+            weights = self.words_compressed[:, dim]
+            top_indices = np.argsort(np.abs(weights))[-top_n:][::-1]
+            top_words = [feature_names[idx] for idx in top_indices]
+            dimension_words.append(top_words)
+        return dimension_words
+    
 
     def search(self, query, roast_types=None, max_price=None, min_score=None, k=10):
         """Search for beans similar to query in latent space
@@ -449,7 +464,11 @@ class SVDSearch:
                 if bean_score is None or float(bean_score) < float(min_score):
                     continue
 
-            results.append((float(sim), doc_id))
+            doc_vec = self.docs_compressed_normed[doc_id]
+            latent_contributions = doc_vec * query_vec  
+            latent_contributions = latent_contributions.tolist()  
+
+            results.append((float(sim), doc_id, latent_contributions))
 
         # sort by similarity (descending)
         results.sort(reverse=True)
