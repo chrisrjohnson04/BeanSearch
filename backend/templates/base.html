@@ -178,7 +178,7 @@
           .slice(0, 5); // Limit to top 5 for brevity
         contributionsDisplay = `
           <div class="latent-contributions">
-            <p>Top Themes: ${sortedContributions
+            <p>Top Latent Dimensions: ${sortedContributions
               .map((c) => {
                 const words = dimensionWords[c.index] ? dimensionWords[c.index].join(", ") : `Dim ${c.index + 1}`;
                 return `${words}: ${c.value.toFixed(4)}`;
