@@ -39,7 +39,7 @@ doc_norms = logic.compute_doc_norms(inv_idx, idf, len(bean_tokens))
 
 
 # Initialize and build SVD model
-print("Building SVD model...")
+print("Building SVD model")
 svd_search = logic.SVDSearch(beans, n_components=40)
 svd_search.build_model()
 print("SVD model built successfully!")
